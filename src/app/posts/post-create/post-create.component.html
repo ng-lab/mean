@@ -1,31 +1,38 @@
+{{new_post | json}}
+<img *ngIf="new_post" [src]="new_post.imagePath" alt="">
 <mat-card>
-  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
+  <form [formGroup]="addPostForm" (submit)="submit()"> 
     <mat-form-field>
       <input
         matInput
         type="text"
-        name="title"
-        ngModel
-        required
-        minlength="3"
         placeholder="Post Title"
-        #title="ngModel">
-      <mat-error *ngIf="title.invalid">Please enter a post title.</mat-error>
+        formControlName="title"
+      />
+      <mat-error *ngIf="addPostForm.get('title').invalid"
+        >Please enter a post title.</mat-error
+      >
     </mat-form-field>
+
+    <div class="image_selection">
+      <div class="image-preview" *ngIf="addPostForm.get('image').valid && imagePreview && imagePreview !== null">
+        <img [src]="imagePreview" alt="">
+      </div>
+      <button type="button" class="mat-button" (click)="filePicker.click()">Choose File</button>
+      <input type="file" #filePicker (change)="onImagePick($event)"/>
+
+      <mat-error *ngIf="imagePreview && addPostForm.get('image').invalid">Please enter a valid image file.</mat-error>
+
+    </div>
     <mat-form-field>
       <textarea
         matInput
-        rows="4"
-        name="content"
-        ngModel
-        required
+        type="text"
+        formControlName="content"
         placeholder="Post Content"
-        #content="ngModel"></textarea>
-      <mat-error *ngIf="content.invalid">Please enter a post title.</mat-error>
+      ></textarea>
+      <mat-error *ngIf="addPostForm.get('content').invalid">Please enter a post title.</mat-error>
     </mat-form-field>
-    <button
-      mat-raised-button
-      color="accent"
-      type="submit">Save Post</button>
+    <button mat-raised-button color="accent" type="submit">Save Post</button>
   </form>
 </mat-card>
